@@ -17,6 +17,7 @@ DEFAULT_BASE_URL = "http://121.40.111.236:3033/api"
 DEFAULT_TIMEZONE = "Asia/Shanghai"
 DEFAULT_TIMEOUT = 30
 DEFAULT_STUDENT_NO = "202337057"
+DEFAULT_NAME = "殷祥凯"
 DEFAULT_PASSWORD = "殷祥凯"
 
 
@@ -28,6 +29,7 @@ class CheckinError(RuntimeError):
 class Config:
     base_url: str
     student_no: str
+    name: str
     password: str
     timezone: str
     timeout: int = DEFAULT_TIMEOUT
@@ -44,12 +46,14 @@ def env_or_default(name: str, default: str) -> str:
 def load_config() -> Config:
     base_url = env_or_default("CHECKIN_BASE_URL", DEFAULT_BASE_URL).rstrip("/")
     student_no = env_or_default("CHECKIN_STUDENT_NO", DEFAULT_STUDENT_NO)
+    name = env_or_default("CHECKIN_NAME", DEFAULT_NAME)
     password = env_or_default("CHECKIN_PASSWORD", DEFAULT_PASSWORD)
     timezone = env_or_default("CHECKIN_TIMEZONE", DEFAULT_TIMEZONE)
 
     return Config(
         base_url=base_url,
         student_no=student_no,
+        name=name,
         password=password,
         timezone=timezone,
     )
@@ -106,14 +110,28 @@ def api_request(
 
 
 def login(config: Config) -> str:
+    role_response = api_request(
+        config,
+        "POST",
+        "/auth/check-role",
+        payload={"student_no": config.student_no},
+    )
+    role_data = role_response.get("data")
+    is_student = isinstance(role_data, dict) and bool(role_data.get("is_student"))
+
+    login_payload = {"student_no": config.student_no}
+    if is_student:
+        login_payload["name"] = config.name
+        print("检测到学生账号，使用学号+姓名登录")
+    else:
+        login_payload["password"] = config.password
+        print("检测到非学生账号，使用学号+密码登录")
+
     response = api_request(
         config,
         "POST",
         "/auth/login",
-        payload={
-            "student_no": config.student_no,
-            "password": config.password,
-        },
+        payload=login_payload,
     )
     payload = response.get("data")
     if not isinstance(payload, dict):
