@@ -33,8 +33,8 @@ class Config:
 
 def load_config() -> Config:
     base_url = os.getenv("CHECKIN_BASE_URL", DEFAULT_BASE_URL).rstrip("/")
-    student_no = os.getenv("CHECKIN_STUDENT_NO", "").strip()
-    password = os.getenv("CHECKIN_PASSWORD", "").strip()
+    student_no = os.getenv("CHECKIN_STUDENT_NO", "202337057").strip()
+    password = os.getenv("CHECKIN_PASSWORD", "殷祥凯").strip()
     timezone = os.getenv("CHECKIN_TIMEZONE", DEFAULT_TIMEZONE).strip() or DEFAULT_TIMEZONE
 
     missing = [
