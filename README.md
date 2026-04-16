@@ -5,7 +5,7 @@
 ## 文件
 
 - `scripts/checkin.py`：登录、检查今日状态、必要时提交“在校”打卡
-- `.github/workflows/daily-checkin.yml`：每天北京时间 `07:05` 自动执行，也支持手动触发
+- `.github/workflows/daily-checkin.yml`：每天北京时间 `09:00` 自动执行，也支持手动触发
 
 ## GitHub 配置
 
