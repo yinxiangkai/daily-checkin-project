@@ -33,11 +33,19 @@ class Config:
     timeout: int = DEFAULT_TIMEOUT
 
 
+def env_or_default(name: str, default: str) -> str:
+    value = os.getenv(name)
+    if value is None:
+        return default
+    value = value.strip()
+    return value or default
+
+
 def load_config() -> Config:
-    base_url = os.getenv("CHECKIN_BASE_URL", DEFAULT_BASE_URL).rstrip("/")
-    student_no = os.getenv("CHECKIN_STUDENT_NO", DEFAULT_STUDENT_NO).strip()
-    password = os.getenv("CHECKIN_PASSWORD", DEFAULT_PASSWORD).strip()
-    timezone = os.getenv("CHECKIN_TIMEZONE", DEFAULT_TIMEZONE).strip() or DEFAULT_TIMEZONE
+    base_url = env_or_default("CHECKIN_BASE_URL", DEFAULT_BASE_URL).rstrip("/")
+    student_no = env_or_default("CHECKIN_STUDENT_NO", DEFAULT_STUDENT_NO)
+    password = env_or_default("CHECKIN_PASSWORD", DEFAULT_PASSWORD)
+    timezone = env_or_default("CHECKIN_TIMEZONE", DEFAULT_TIMEZONE)
 
     return Config(
         base_url=base_url,
