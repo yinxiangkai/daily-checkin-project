@@ -1,0 +1,26 @@
+name: Daily Check-in
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "5 23 * * *"
+
+jobs:
+  checkin:
+    runs-on: ubuntu-latest
+    env:
+      CHECKIN_BASE_URL: ${{ vars.CHECKIN_BASE_URL || 'http://121.40.111.236:3033/api' }}
+      CHECKIN_STUDENT_NO: ${{ secrets.CHECKIN_STUDENT_NO }}
+      CHECKIN_PASSWORD: ${{ secrets.CHECKIN_PASSWORD }}
+      CHECKIN_TIMEZONE: ${{ vars.CHECKIN_TIMEZONE || 'Asia/Shanghai' }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Run daily check-in
+        run: python3 scripts/checkin.py
