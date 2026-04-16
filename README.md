@@ -9,21 +9,23 @@
 
 ## GitHub 配置
 
-在仓库的 `Settings -> Secrets and variables -> Actions` 中添加：
+当前脚本已经内置了账号和密码，所以不配置 `Secrets` 也能直接运行。
 
-### Secrets
+如果你之后想在 GitHub 上覆盖默认值，可以在仓库的 `Settings -> Secrets and variables -> Actions` 中添加：
+
+### 可选 Secrets
 
 - `CHECKIN_STUDENT_NO`
 - `CHECKIN_PASSWORD`
 
-### Variables
+### 可选 Variables
 
 - `CHECKIN_BASE_URL`
   默认值：`http://121.40.111.236:3033/api`
 - `CHECKIN_TIMEZONE`
   默认值：`Asia/Shanghai`
 
-如果不设置 Variables，工作流会自动使用默认值。
+如果不设置这些值，工作流会自动使用脚本中的默认配置。
 
 ## 本地运行
 

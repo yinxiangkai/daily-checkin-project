@@ -16,6 +16,8 @@ from zoneinfo import ZoneInfo
 DEFAULT_BASE_URL = "http://121.40.111.236:3033/api"
 DEFAULT_TIMEZONE = "Asia/Shanghai"
 DEFAULT_TIMEOUT = 30
+DEFAULT_STUDENT_NO = "202337057"
+DEFAULT_PASSWORD = "殷祥凯"
 
 
 class CheckinError(RuntimeError):
@@ -33,20 +35,9 @@ class Config:
 
 def load_config() -> Config:
     base_url = os.getenv("CHECKIN_BASE_URL", DEFAULT_BASE_URL).rstrip("/")
-    student_no = os.getenv("CHECKIN_STUDENT_NO", "202337057").strip()
-    password = os.getenv("CHECKIN_PASSWORD", "殷祥凯").strip()
+    student_no = os.getenv("CHECKIN_STUDENT_NO", DEFAULT_STUDENT_NO).strip()
+    password = os.getenv("CHECKIN_PASSWORD", DEFAULT_PASSWORD).strip()
     timezone = os.getenv("CHECKIN_TIMEZONE", DEFAULT_TIMEZONE).strip() or DEFAULT_TIMEZONE
-
-    missing = [
-        name
-        for name, value in (
-            ("CHECKIN_STUDENT_NO", student_no),
-            ("CHECKIN_PASSWORD", password),
-        )
-        if not value
-    ]
-    if missing:
-        raise CheckinError(f"Missing required environment variables: {', '.join(missing)}")
 
     return Config(
         base_url=base_url,
