@@ -19,6 +19,7 @@ DEFAULT_TIMEOUT = 30
 DEFAULT_STUDENT_NO = "202337057"
 DEFAULT_NAME = "殷祥凯"
 DEFAULT_PASSWORD = "殷祥凯"
+CHECKIN_WINDOW_START_HOUR = 12
 
 
 class CheckinError(RuntimeError):
@@ -65,6 +66,10 @@ def now_in_timezone(timezone_name: str) -> datetime:
     except Exception as exc:
         raise CheckinError(f"Invalid timezone: {timezone_name}") from exc
     return datetime.now(tz)
+
+
+def is_within_checkin_window(now: datetime) -> bool:
+    return now.hour >= CHECKIN_WINDOW_START_HOUR
 
 
 def api_request(
@@ -182,6 +187,10 @@ def main() -> int:
         config = load_config()
         now = now_in_timezone(config.timezone)
         print(f"开始执行打卡: {now.strftime('%Y-%m-%d %H:%M:%S %Z')}")
+
+        if not is_within_checkin_window(now):
+            print("当前未到打卡时间段，等待北京时间 12:00 后再执行")
+            return 0
 
         token = login(config)
         today_status = get_today_status(config, token)

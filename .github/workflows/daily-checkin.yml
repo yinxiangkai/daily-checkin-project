@@ -3,7 +3,13 @@ name: Daily Check-in
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 1 * * *"
+    - cron: "5 4 * * *"
+    - cron: "15 4 * * *"
+    - cron: "25 4 * * *"
+
+concurrency:
+  group: daily-checkin
+  cancel-in-progress: false
 
 jobs:
   checkin:
